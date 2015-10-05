@@ -52,7 +52,7 @@
   }
 
   _configuration = configuration;
-  _simulatorPool = [FBSimulatorPool poolWithConfiguration:configuration deviceSet:SimDeviceSet.defaultSet];
+  _simulatorPool = [FBSimulatorControl poolForConfiguration:configuration];
   return self;
 }
 
@@ -113,6 +113,18 @@
 
   self.hasRunOnce = YES;
   return YES;
+}
+
++ (FBSimulatorPool *)poolForConfiguration:(FBSimulatorControlConfiguration *)configuration
+{
+  return [FBSimulatorPool poolWithConfiguration:configuration deviceSet:[self deviceSetForConfiguration:configuration]];
+}
+
++ (SimDeviceSet *)deviceSetForConfiguration:(FBSimulatorControlConfiguration *)configuration
+{
+  return configuration.deviceSetPath
+    ? [SimDeviceSet setForSetPath:configuration.deviceSetPath]
+    : SimDeviceSet.defaultSet;
 }
 
 @end
